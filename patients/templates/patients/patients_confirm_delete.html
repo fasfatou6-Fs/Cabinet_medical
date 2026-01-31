@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Supprimer Patient{% endblock %}
+{% block content %}
+<h2>Supprimer Patient</h2>
+<p>Voulez-vous vraiment supprimer {{ patient.nom }} {{ patient.prenom }} ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+    <a href="{% url 'patients_list' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

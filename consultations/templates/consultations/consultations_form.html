@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Consultation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Messages de feedback -->
+    {% if messages %}
+    <div class="mb-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Carte du formulaire -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                {% if form.instance.pk %}
+                    Modifier la consultation
+                {% else %}
+                    Ajouter une consultation
+                {% endif %}
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form.patient.label_tag }}
+                        {{ form.patient }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.medecin.label_tag }}
+                        {{ form.medecin }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form.date_consultation.label_tag }}
+                        {{ form.date_consultation }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.heure.label_tag }}
+                        {{ form.heure }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form.motif.label_tag }}
+                    {{ form.motif }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.notes.label_tag }}
+                    {{ form.notes }}
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'consultations_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i>
+                        {% if form.instance.pk %} Mettre à jour {% else %} Enregistrer {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

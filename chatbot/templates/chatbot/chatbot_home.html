@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Assistant virtuel{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Assistant virtuel 🤖</h2>
+
+    <!-- Formulaire -->
+    <form method="post" class="d-flex mb-3">
+        {% csrf_token %}
+        <input type="text" name="message" class="form-control me-2" placeholder="Votre message...">
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+
+    <!-- Bouton Vider -->
+    <form method="post" class="mb-3">
+        {% csrf_token %}
+        <button type="submit" name="clear" class="btn btn-danger">🗑️ Vider l’historique</button>
+    </form>
+
+    <!-- Historique -->
+    <div class="chat-box">
+        {% for msg in messages %}
+            <div class="chat-bubble user">
+                <strong>👩 Vous :</strong> {{ msg.user_text }}
+            </div>
+            <div class="chat-bubble bot">
+                <strong>🤖 Assistant :</strong> {{ msg.bot_response }}
+                <br><small class="text-muted">{{ msg.timestamp|date:"d/m/Y H:i" }}</small>
+            </div>
+        {% empty %}
+            <div class="chat-bubble bot">Aucun message pour le moment.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.chat-bubble {
+    max-width: 70%;
+    padding: 12px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: fadeIn 0.4s ease-in-out;
+}
+.chat-bubble.user {
+    align-self: flex-end;
+    background-color: #ff69b4;
+    color: white;
+}
+.chat-bubble.bot {
+    align-self: flex-start;
+    background-color: #ffb6c1;
+    color: black;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}

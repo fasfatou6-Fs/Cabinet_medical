@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Supprimer une consultation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Carte de confirmation -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirmation de suppression</h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-3">
+                Êtes-vous sûr de vouloir supprimer cette consultation ?
+            </p>
+
+            <!-- Détails de la consultation -->
+            <ul class="list-group mb-3">
+                <li class="list-group-item"><strong>Patient :</strong> {{ consultation.patient }}</li>
+                <li class="list-group-item"><strong>Médecin :</strong> {{ consultation.medecin }}</li>
+                <li class="list-group-item"><strong>Date :</strong> {{ consultation.date_consultation|date:"d/m/Y" }}</li>
+                <li class="list-group-item"><strong>Heure :</strong> {{ consultation.date_consultation|time:"H:i" }}</li>
+                <li class="list-group-item"><strong>Motif :</strong> {{ consultation.motif }}</li>
+                <li class="list-group-item"><strong>Notes :</strong> {{ consultation.notes }}</li>
+            </ul>
+
+            <!-- Boutons d’action -->
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'consultations_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

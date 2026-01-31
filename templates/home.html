@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Accueil - Cabinet Médical{% endblock %}
+
+{% block content %}
+<style>
+    /* Style pour la section de bienvenue avec image de fond */
+    .hero-section {
+        background: linear-gradient(rgba(13, 110, 253, 0.7), rgba(0, 36, 91, 0.7)), 
+                    url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        height: 450px;
+        border-radius: 20px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .service-card {
+        transition: transform 0.3s ease;
+        border: none;
+        border-top: 4px solid #0d6efd;
+    }
+    .service-card:hover {
+        transform: translateY(-10px);
+    }
+</style>
+
+<div class="hero-section d-flex align-items-center justify-content-center text-center text-white">
+    <div class="p-5">
+        <h1 class="display-4 fw-bold">Bienvenue au Cabinet Médical</h1>
+        <p class="lead fs-3">Gérez votre établissement avec efficacité et simplicité.</p>
+        
+        <a href="{% url 'consultations_list' %}" class="btn btn-light btn-lg mt-3 px-4 py-3 shadow">
+            <i class="bi bi-chat-dots-fill"></i> Accéder aux Consultations & Assistant 🤖
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Nos services de gestion</h2>
+        <hr class="mx-auto bg-primary" style="width: 100px; height: 3px;">
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card service-card p-4 shadow-sm h-100 text-center">
+                <div class="display-5 text-primary mb-3">👩</div>
+                <h5 class="fw-bold">Patients</h5>
+                <p class="text-muted small">Suivi complet des dossiers et historiques patients.</p>
+                <a href="{% url 'patients_list' %}" class="btn btn-sm btn-outline-primary mt-auto">Gérer</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card service-card p-4 shadow-sm h-100 text-center">
+                <div class="display-5 text-primary mb-3">🩺</div>
+                <h5 class="fw-bold">Médecins</h5>
+                <p class="text-muted small">Répertoire des spécialistes et disponibilités.</p>
+                <a href="{% url 'medecins_list' %}" class="btn btn-sm btn-outline-primary mt-auto">Voir</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card service-card p-4 shadow-sm h-100 text-center">
+                <div class="display-5 text-primary mb-3">📅</div>
+                <h5 class="fw-bold">Rendez-vous</h5>
+                <p class="text-muted small">Planification optimisée des consultations.</p>
+                <a href="{% url 'rendezvous_list' %}" class="btn btn-sm btn-outline-primary mt-auto">Organiser</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card service-card p-4 shadow-sm h-100 text-center">
+                <div class="display-5 text-primary mb-3">📋</div>
+                <h5 class="fw-bold">Consultations</h5>
+                <p class="text-muted small">Archive médicale et assistant virtuel intelligent.</p>
+                <a href="{% url 'consultations_list' %}" class="btn btn-sm btn-outline-primary mt-auto">Consulter</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="alert alert-info mt-5 text-center shadow-sm">
+    <i class="bi bi-info-circle"></i> Veuillez vous <strong>connecter</strong> pour accéder à toutes les fonctionnalités de gestion.
+</div>
+{% endif %}
+
+{% endblock %}

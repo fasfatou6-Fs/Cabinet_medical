@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Gestion des Consultations{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Tableau des Consultations</h2>
+        <a href="{% url 'consultations_create' %}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle"></i> Nouvelle Consultation
+        </a>
+    </div>
+
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body">
+            <form method="get" class="d-flex gap-2">
+                <input type="text" name="q" class="form-control" placeholder="Rechercher par patient ou médecin..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+                {% if query %}
+                    <a href="{% url 'consultations_list' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Date & Heure</th>
+                        <th>Patient</th>
+                        <th>Médecin</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consultation in consultations %}
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge bg-info text-dark">
+                                {{ consultation.date_consultation|date:"d/m/Y" }} - {{ consultation.heure|time:"H:i" }}
+                            </span>
+                        </td>
+                        <td class="fw-bold">{{ consultation.patient }}</td>
+                        <td>Dr. {{ consultation.medecin.username }}</td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <a href="{% url 'generer_ordonnance_pdf' consultation.pk %}" class="btn btn-sm btn-outline-danger" title="Générer Ordonnance">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                </a>
+                                
+                                <a href="{% url 'consultations_update' consultation.pk %}" class="btn btn-sm btn-outline-warning" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'consultations_delete' consultation.pk %}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">Aucune consultation.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="chat-circle" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; z-index: 1000; cursor: pointer;">
+    <i class="bi bi-robot fs-2"></i>
+</div>
+
+<div id="chat-box" class="card shadow-lg d-none" style="position: fixed; bottom: 110px; right: 30px; width: 350px; height: 500px; z-index: 1000; border-radius: 15px; display: flex; flex-direction: column;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Assistant Dr. {{ request.user.username }}</h6>
+        <button type="button" class="btn-close btn-close-white" id="chat-close"></button>
+    </div>
+    
+    <div id="chat-content" class="card-body overflow-auto bg-light" style="flex: 1;">
+        <div class="text-start mb-3">
+            <div class="p-3 rounded bg-white shadow-sm border d-inline-block" style="max-width: 90%;">
+                Bonjour ! 👋 <br>
+                Vous avez <b>{{ today_count }}</b> patient(s) aujourd'hui.
+                <hr>
+                <p class="small fw-bold text-muted mb-2">Actions rapides :</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-sm btn-outline-primary text-start" onclick="setChatInput('envoyer récap')">📧 Envoyer Récap (Email)</button>
+                    <button class="btn btn-sm btn-outline-info text-start" onclick="setChatInput('historique [nom]')">🔎 Voir Dossier Patient</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white border-0 p-2">
+        <div class="input-group">
+            <input type="text" id="chat-input" class="form-control" placeholder="Posez une question...">
+            <button class="btn btn-primary" id="chat-send"><i class="bi bi-send"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ... Gardez tout votre script JavaScript existant ici ...
+    const chatCircle = document.getElementById('chat-circle');
+    const chatBox = document.getElementById('chat-box');
+    const chatClose = document.getElementById('chat-close');
+    const chatSend = document.getElementById('chat-send');
+    const chatInput = document.getElementById('chat-input');
+    const chatContent = document.getElementById('chat-content');
+
+    function setChatInput(text) {
+        chatInput.value = text;
+        chatInput.focus();
+    }
+
+    chatCircle.addEventListener('click', () => {
+        chatBox.classList.toggle('d-none');
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatBox.classList.add('d-none');
+    });
+
+    chatSend.addEventListener('click', async () => {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        chatContent.innerHTML += `<div class="text-end mb-3"><div class="p-2 rounded bg-primary text-white d-inline-block">${message}</div></div>`;
+        chatInput.value = "";
+
+        const response = await fetch("{% url 'get_bot_response' %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `message=${encodeURIComponent(message)}`
+        });
+        const data = await response.json();
+
+        chatContent.innerHTML += `<div class="text-start mb-3"><div class="p-2 rounded bg-white shadow-sm border d-inline-block">${data.reply}</div></div>`;
+        chatContent.scrollTop = chatContent.scrollHeight;
+    });
+
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") chatSend.click();
+    });
+</script>
+{% endblock %}

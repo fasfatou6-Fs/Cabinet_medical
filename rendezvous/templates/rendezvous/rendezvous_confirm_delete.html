@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Supprimer un rendez-vous{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Carte de confirmation -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirmation de suppression</h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-3">
+                Êtes-vous sûr de vouloir supprimer ce rendez-vous ?
+            </p>
+
+            <!-- Détails du rendez-vous -->
+            <ul class="list-group mb-3">
+                <li class="list-group-item"><strong>Patient :</strong> {{ rendezvous.patient }}</li>
+                <li class="list-group-item"><strong>Médecin :</strong> {{ rendezvous.medecin }}</li>
+                <li class="list-group-item"><strong>Date :</strong> {{ rendezvous.date_rendezvous|date:"d/m/Y" }}</li>
+                <li class="list-group-item"><strong>Heure :</strong> {{ rendezvous.heure_rendezvous|time:"H:i" }}</li>
+            </ul>
+
+            <!-- Boutons d’action -->
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'rendezvous_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

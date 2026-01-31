@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Ajouter une consultation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Ajouter une consultation</h1>
+
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+        <a href="{% url 'consultations_list' %}" class="btn btn-secondary mt-3">Retour à la liste</a>
+    </form>
+</div>
+{% endblock %}

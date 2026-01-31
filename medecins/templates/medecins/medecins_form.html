@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Formulaire Médecin{% endblock %}
+{% block content %}
+<h2>Formulaire Médecin</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.nom.label_tag }}
+        {{ form.nom }}
+    </div>
+    <div class="mb-3">
+        {{ form.prenom.label_tag }}
+        {{ form.prenom }}
+    </div>
+    <div class="mb-3">
+        {{ form.specialite.label_tag }}
+        {{ form.specialite }}
+    </div>
+    <div class="mb-3">
+        {{ form.telephone.label_tag }}
+        {{ form.telephone }}
+    </div>
+    <div class="mb-3">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+    </div>
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="{% url 'medecins_list' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

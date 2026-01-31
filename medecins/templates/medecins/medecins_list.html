@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Liste des médecins{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Répertoire des Médecins</h2>
+        <a href="{% url 'medecins_create' %}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle"></i> Ajouter un médecin
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4">Nom & Prénom</th>
+                            <th>Spécialité</th>
+                            <th>Contact</th>
+                            <th class="text-center pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for medecin in medecins %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold">{{ medecin.nom }} {{ medecin.prenom }}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark">{{ medecin.specialite }}</span>
+                            </td>
+                            <td>
+                                <i class="bi bi-telephone small"></i> {{ medecin.telephone }}<br>
+                                <small class="text-muted">{{ medecin.email }}</small>
+                            </td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group">
+                                    <a href="{% url 'medecins_update' medecin.pk %}" class="btn btn-sm btn-warning text-white">
+                                        <i class="bi bi-pencil"></i> Modifier
+                                    </a>
+                                    <a href="{% url 'medecins_delete' medecin.pk %}" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-person-exclamation display-4"></i><br>
+                                Aucun médecin enregistré.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
